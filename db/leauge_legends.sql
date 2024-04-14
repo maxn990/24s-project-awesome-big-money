@@ -4,7 +4,7 @@ USE LocalLeagueLegends;
 
 CREATE TABLE IF NOT EXISTS Managers
 (
-    manager_id INTEGER,
+    manager_id INTEGER AUTO_INCREMENT,
     firstName  VARCHAR(40)  NOT NULL,
     lastName   VARCHAR(40)  NOT NULL,
     email      VARCHAR(100) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Managers
 
 CREATE TABLE IF NOT EXISTS Leagues
 (
-    league_id  INTEGER,
+    league_id  INTEGER AUTO_INCREMENT,
     sportType  VARCHAR(40) NOT NULL,
     name       VARCHAR(40) NOT NULL,
     manager_id INTEGER     NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Leagues
 
 CREATE TABLE IF NOT EXISTS Teams
 (
-    team_id   INTEGER,
+    team_id   INTEGER AUTO_INCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     season    VARCHAR(7)         NOT NULL, # Q<quarter number>-<Year>
     teamName  VARCHAR(40) UNIQUE NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Teams
 
 CREATE TABLE IF NOT EXISTS Players
 (
-    player_id INTEGER,
+    player_id INTEGER AUTO_INCREMENT,
     lastName  VARCHAR(40)  NOT NULL,
     firstName VARCHAR(40)  NOT NULL,
     email     VARCHAR(40)  NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS TeamProfile
 
 CREATE TABLE IF NOT EXISTS Fans
 (
-    fan_id    INTEGER,
+    fan_id    INTEGER AUTO_INCREMENT,
     firstName VARCHAR(40)  NOT NULL,
     lastName  VARCHAR(40)  NOT NULL,
     address   VARCHAR(100) NOT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS FriendList
 
 CREATE TABLE IF NOT EXISTS Coaches
 (
-    coach_id  INTEGER,
+    coach_id  INTEGER AUTO_INCREMENT,
     firstName VARCHAR(40)  NOT NULL,
     lastName  VARCHAR(40)  NOT NULL,
     email     VARCHAR(40)  NOT NULL,
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS Coaches
 
 CREATE TABLE IF NOT EXISTS Games
 (
-    game_id   INTEGER,
+    game_id   INTEGER AUTO_INCREMENT,
     date      DATE        NOT NULL,
     winner_id INTEGER,
     time      TIME        NOT NULL,
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS GameAttendance
 
 CREATE TABLE IF NOT EXISTS Practices
 (
-    practice_id INTEGER,
+    practice_id INTEGER AUTO_INCREMENT,
     time        TIME        NOT NULL,
     date        DATE        NOT NULL,
     state       VARCHAR(2)  NOT NULL,
