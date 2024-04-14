@@ -19,7 +19,7 @@ def create_app():
     app.config['MYSQL_DATABASE_PASSWORD'] = open('/secrets/db_root_password.txt').readline().strip()
     app.config['MYSQL_DATABASE_HOST'] = 'db'
     app.config['MYSQL_DATABASE_PORT'] = 3306
-    app.config['MYSQL_DATABASE_DB'] = 'northwind'  # Change this to your DB name
+    app.config['MYSQL_DATABASE_DB'] = 'LocalLeagueLegends'  # Change this to your DB name
 
     # Initialize the database object with the settings above. 
     db.init_app(app)
@@ -33,13 +33,21 @@ def create_app():
         return "<h1>Welcome to the 3200 boilerplate app</h1>"
 
     # Import the various Beluprint Objects
-    from src.customers.customers import customers
-    from src.products.products  import products
+    # from src.customers.customers import customers
+    # from src.products.products  import products
+    from src.coaches.coaches import coaches
+    from src.players.players import players
+    from src.leagues.leagues import leagues
+    from src.managers.managers import managers
+    from src.playerProfile.playerProfile import playerProfile
 
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each
-    app.register_blueprint(customers,   url_prefix='/c')
-    app.register_blueprint(products,    url_prefix='/p')
+    app.register_blueprint(coaches,  url_prefix='/c')
+    app.register_blueprint(players,  url_prefix='/p')
+    app.register_blueprint(leagues, url_prefix='/l')
+    app.register_blueprint(managers, url_prefix='/m')
+    app.register_blueprint(playerProfile, url_prefix='/pp')
 
     # Don't forget to return the app object
     return app
