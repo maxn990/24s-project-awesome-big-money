@@ -2,11 +2,14 @@ from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
+organizations = Blueprint('organizations', __name__)
 
-leagues = Blueprint('leagues', __name__)
+#######################################################
+## LEAGUE ROUTES
+#######################################################
 
-@leagues.route('/leagues', methods=['GET'])
-def get_managers():
+@organizations.route('/leagues', methods=['GET'])
+def get_league():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Leagues')
     row_headers = [x[0] for x in cursor.description]
@@ -19,8 +22,8 @@ def get_managers():
     the_response.mimetype = 'application/json'
     return the_response
 
-@leagues.route('/leagues', methods=['POST'])
-def add_new_manager():
+@organizations.route('/leagues', methods=['POST'])
+def add_new_league():
     
     # collecting data from the request object
     the_data = request.json
