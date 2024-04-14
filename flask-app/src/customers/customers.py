@@ -2,7 +2,7 @@
 # Sample customers blueprint of endpoints
 # Remove this file if you are not using it in your project
 ########################################################
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
@@ -13,7 +13,7 @@ customers = Blueprint('customers', __name__)
 @customers.route('/customers', methods=['GET'])
 def get_customers():
     cursor = db.get_db().cursor()
-    cursor.execute('select company, last_name,\
+    cursor.execute('select id, company, last_name,\
         first_name, job_title, business_phone from customers')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -39,3 +39,25 @@ def get_customer(userID):
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+
+# make a customers update route
+@customers.route('/customers', methods=['PUT'])
+def put_customer():
+
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    cust_id = the_data['id']
+    first = the_data['first_name']
+    last = the_data['last_name' ]
+    company = the_data['company']
+
+    # Constructing the query
+    query = 'UPDATE customers SET first_name = %s, last_name = %s, company = %s WHERE id = %s'
+    data = (first, last, company, cust_id)
+    cursor = db.get_db().cursor()
+    r = cursor. execute(query, data)
+    db.get_db( ).commit( )
+    return 'customer updated!'
