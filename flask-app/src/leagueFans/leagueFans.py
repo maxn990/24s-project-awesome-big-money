@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
-@leagues.route('/leagues', methods=['GET'])
+@leagues.route('/leaguesFans', methods=['GET'])
 def get_leagueFans(league_id):
     cursor = db.get_db().cursor()
     cursor.execute('''
