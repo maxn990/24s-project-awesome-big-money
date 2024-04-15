@@ -119,20 +119,17 @@ def add_new_coach():
     current_app.logger.info(the_data)
 
     # extracting the variable
-    coach_id = the_data['coach_id']
     first = the_data['firstName']
     last = the_data['lastName']
     email = the_data['email']
     phone = the_data['phone']
-    team_id = the_data['team_id']
+    address = the_data['address']
 
     # constructing the query
-    query = 'insert into Coaches (coach_id, firstName, lastName, email, phone) values ("'
-    query += coach_id + '", '
-    query += first + '", "'
-    query += last + '", "'
-    query += email + '", '
-    query += phone + '", '
+    query = (
+    'INSERT INTO Coaches (firstName, lastName, email, phone, address) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(first, last, email, phone, address)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
