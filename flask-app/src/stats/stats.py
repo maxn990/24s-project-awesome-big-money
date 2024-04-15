@@ -134,8 +134,6 @@ def update_player_profile_stats(player_id, game_id):
     return 'Success!'
 
 
-
-
 #######################################################
 ## TEAM STATS ROUTES
 #######################################################

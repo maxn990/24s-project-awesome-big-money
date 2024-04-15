@@ -40,7 +40,7 @@ def add_new_player():
     playerId = the_data['player_id']
 
     # Constructing the query
-    query = 'insert into players (lastName, firstName, email, address, phone, player_id) values ("'
+    query = 'insert into Players (lastName, firstName, email, address, phone, player_id) values ("'
     query += last + '", "'
     query += first + '", "'
     query += email + '", '
@@ -100,7 +100,7 @@ def get_player(player_id):
 @users.route('/coaches', methods=['GET'])
 def get_coaches():
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM coaches')
+    cursor.execute('SELECT * FROM Coaches')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -124,10 +124,10 @@ def add_new_player_coach():
     email = the_data['email']
     phone = the_data['phone']
     team_id = the_data['team_id']
-    coachId = the_data['coach_id']
+    coach_id = the_data['coach_id']
 
     # Constructing the query
-    query = 'insert into coaches (coach_id, firstName, lastName, email, phone, team_id) values ("'
+    query = 'insert into Coaches (coach_id, firstName, lastName, email, phone, team_id) values ("'
     query += first + '", "'
     query += last + '", "'
     query += email + '", '
@@ -163,7 +163,7 @@ def delete_coach(coach_id):
 @users.route('/managers', methods=['GET'])
 def get_managers():
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM managers')
+    cursor.execute('SELECT * FROM Managers')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
