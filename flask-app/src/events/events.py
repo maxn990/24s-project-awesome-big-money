@@ -11,7 +11,7 @@ events = Blueprint('events', __name__)
 @events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['GET'])
 def get_player_profile_practice(practice_id, player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM practiceAttendance WHERE practice_id = {} AND player_id = "{}"'.format(practice_id, player_id))
+    cursor.execute('SELECT * FROM PracticeAttendance WHERE practice_id = {} AND player_id = "{}"'.format(practice_id, player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -29,7 +29,7 @@ def add_player_information_practice(practice_id, player_id):
     current_app.logger.info(the_data)
 
     # Constructing the query
-    query = 'insert into practiceAttendance (practice_id, player_id) values ("'
+    query = 'insert into PracticeAttendance (practice_id, player_id) values ("'
     query += str(practice_id) + '", "'
     query += str(player_id) + ')'
     current_app.logger.info(query)
