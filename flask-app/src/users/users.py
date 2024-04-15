@@ -98,7 +98,7 @@ def get_player(player_id):
 #######################################################
 
 @users.route('/coaches', methods=['GET'])
-def get_customers():
+def get_coaches():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM coaches')
     row_headers = [x[0] for x in cursor.description]
