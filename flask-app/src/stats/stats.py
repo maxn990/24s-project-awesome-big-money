@@ -75,7 +75,7 @@ def update_player_profile(player_id, sport):
 #######################################################
 
 @stats.route('/playerStats/<player_id>/<game_id>', methods=['GET'])
-def get_player_profile(player_id, game_id):
+def get_player_profile_stats(player_id, game_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM playerStats WHERE player_id = {} AND game_id = "{}"'.format(player_id, game_id))
     row_headers = [x[0] for x in cursor.description]
@@ -89,7 +89,7 @@ def get_player_profile(player_id, game_id):
     return the_response
 
 @stats.route('/playerStats/<player_id>/<game_id>', methods=['POST'])
-def add_player_information(player_id, game_id):
+def add_player_information_stats(player_id, game_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
@@ -112,7 +112,7 @@ def add_player_information(player_id, game_id):
     return 'Success!'
 
 @stats.route('/playerStats/<player_id>/<game_id>', methods=['PUT'])
-def update_player_profile(player_id, game_id):
+def update_player_profile_stats(player_id, game_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
@@ -142,7 +142,7 @@ def update_player_profile(player_id, game_id):
 
 
 @stats.route('/teamStats/<team_id>/<game_id>', methods=['GET'])
-def get_player_profile(team_id, game_id):
+def get_player_profile_team(team_id, game_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM teamStats WHERE team_id = {} AND game_id = "{}"'.format(team_id, game_id))
     row_headers = [x[0] for x in cursor.description]
@@ -154,9 +154,9 @@ def get_player_profile(team_id, game_id):
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
-
+    
 @stats.route('/teamStats/<team_id>/<game_id>', methods=['POST'])
-def add_player_information(team_id, game_id):
+def add_player_information_team(team_id, game_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
@@ -179,7 +179,7 @@ def add_player_information(team_id, game_id):
     return 'Success!'
 
 @stats.route('/teamStats/<team_id>/<game_id>', methods=['PUT'])
-def update_player_profile(team_id, game_id):
+def update_player_profile_team(team_id, game_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)

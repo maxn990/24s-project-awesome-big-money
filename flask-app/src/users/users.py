@@ -25,7 +25,7 @@ def get_players():
     return the_response
 
 @users.route('/players', methods=['POST'])
-def add_new_product():
+def add_new_player():
     
     # collecting data from the request object 
     the_data = request.json
@@ -112,7 +112,7 @@ def get_customers():
     return the_response
 
 @users.route('/coaches', methods=['POST'])
-def add_new_product():
+def add_new_player_coach():
     
     # collecting data from the request object 
     the_data = request.json
@@ -123,7 +123,7 @@ def add_new_product():
     last = the_data['last_name']
     email = the_data['email']
     phone = the_data['phone']
-    teamId = the_data['team_id']
+    team_id = the_data['team_id']
     coachId = the_data['coach_id']
 
     # Constructing the query
@@ -187,7 +187,7 @@ def add_new_manager():
     email = the_data['email']
     phone = the_data['phone']
     address = the_data['address']
-    managerId = the_data['manager_id']
+    manager_id = the_data['manager_id']
 
     # Constructing the query
     query = 'insert into managers (lastName, firstName, email, address, phone, manager_id) values ("'
@@ -208,9 +208,9 @@ def add_new_manager():
 
 
 @users.route('/manager/<manger_id>', methods=['DELETE'])
-def delete_player(manager_id):
+def delete_player_manager(manager_id):
     # Constructing the query
-    query = f'DELETE FROM managers WHERE manager = {manager}'
+    query = f'DELETE FROM managers WHERE manager = {manager_id}'
     
     # executing and committing the delete statement 
     cursor = db.get_db().cursor()
