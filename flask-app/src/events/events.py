@@ -9,7 +9,7 @@ events = Blueprint('events', __name__)
 #######################################################
 
 @events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['GET'])
-def get_player_profile(practice_id, player_id):
+def get_player_profile_practice(practice_id, player_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM practiceAttendance WHERE practice_id = {} AND player_id = "{}"'.format(practice_id, player_id))
     row_headers = [x[0] for x in cursor.description]
@@ -23,7 +23,7 @@ def get_player_profile(practice_id, player_id):
     return the_response
 
 @events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['POST'])
-def add_player_information(practice_id, player_id):
+def add_player_information_practice(practice_id, player_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
@@ -48,7 +48,7 @@ def add_player_information(practice_id, player_id):
 
 
 @events.route('/gameCoaches/<coach_id>/<game_id>', methods=['GET'])
-def get_player_profile(coach_id, game_id):
+def get_player_profile_coach(coach_id, game_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM gameCoaches WHERE coach_id = {} AND game_id = "{}"'.format(coach_id, game_id))
     row_headers = [x[0] for x in cursor.description]
@@ -62,7 +62,7 @@ def get_player_profile(coach_id, game_id):
     return the_response
 
 @events.route('/gameCoaches/<coach_id>/<game_id>', methods=['POST'])
-def add_player_information(coach_id, game_id):
+def add_player_information_coach(coach_id, game_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
