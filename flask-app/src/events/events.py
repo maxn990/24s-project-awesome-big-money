@@ -8,10 +8,10 @@ events = Blueprint('events', __name__)
 ## PRACTICE ATTENDANCE ROUTES
 #######################################################
 
-@events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['GET'])
-def get_player_profile_practice(practice_id, player_id):
+@events.route('/practiceAttendance/<player_id>', methods=['GET'])
+def get_player_profile_practice(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM PracticeAttendance WHERE practice_id = {} AND player_id = "{}"'.format(practice_id, player_id))
+    cursor.execute('SELECT * FROM PracticeAttendance WHERE player_id = "{}"'.format(practice_id, player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
