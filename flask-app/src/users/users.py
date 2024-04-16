@@ -269,6 +269,49 @@ def get_leagueFans(league_id):
     the_response.mimetype = 'application/json'
     return the_response
 
+@users.route('/fans', methods=['GET'])
+def get_fans():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Fans')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+    @users.route('/fans', methods=['POST'])
+    def add_new_fan():
+        # collecting data from the request object 
+        the_data = request.json
+        current_app.logger.info(the_data)
+        
+        # extracting the variables
+        first = the_data['first_name']
+        last = the_data['last_name']
+        email = the_data['email']
+        phone = the_data['phone']
+        address = the_data['address']
+        
+        # Constructing the query
+        query = 'INSERT INTO Fans (firstName, lastName, email, address, phone) VALUES ("'
+        query += first + '", "'
+        query += last + '", "'
+        query += email + '", "'
+        query += address + '", "'
+        query += phone + '")'
+        current_app.logger.info(query)
+        
+        # executing and committing the insert statement 
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        db.get_db().commit()
+        
+        return 'Success!'
+
 #######################################################
 ## PLAYER TEAMS
 #######################################################
@@ -293,3 +336,51 @@ def get_playerTeams(team_id):
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+    
+#######################################################
+## FANS ROUTES
+#######################################################
+
+@organizations.route('/Fans', methods=['GET'])
+def get_league():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Fans')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@organizations.route('/Fans', methods=['POST'])
+def add_new_league():
+    
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # extracting the variable
+    date = the_data['firstName']
+    time = the_data['lastName']
+    state = the_data['address']
+    city = the_data['phone']
+    park = the_data['email']
+
+    # Constructing the query
+    query = 'insert into Leagues (firstName, lastName, address, phone, email) values ("'
+    query += firstName + '", "'
+    query += lastName + '", '
+    uery += address + '", '
+    uery += phone + '", '
+    query += email + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'

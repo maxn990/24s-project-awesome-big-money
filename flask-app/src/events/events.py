@@ -80,3 +80,103 @@ def add_player_information_coach(coach_id, game_id):
     
     return 'Success!'
 
+#######################################################
+## GAMES ROUTES
+#######################################################
+
+@organizations.route('/Games', methods=['GET'])
+def get_league():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Games')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@organizations.route('/Games', methods=['POST'])
+def add_new_league():
+    
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # extracting the variable
+    date = the_data['date']
+    winner_id = the_data['winner_id']
+    time = the_data['time']
+    referee = the_data['referee']
+    state = the_data['state']
+    city = the_data['city']
+    park = the_data['park']
+
+    # Constructing the query
+    query = 'insert into Leagues (date, winner_id, time, referee, state, city, park) values ("'
+    query += date + '", "'
+    query += winner_id + '", "'
+    query += time + '", '
+    query += referee + '", '
+    uery += state + '", '
+    uery += city + '", '
+    query += park + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
+ #######################################################
+## PRACTICES ROUTES
+#######################################################
+
+@organizations.route('/Practices', methods=['GET'])
+def get_league():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Practices')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@organizations.route('/Practices', methods=['POST'])
+def add_new_league():
+    
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # extracting the variable
+    date = the_data['time']
+    time = the_data['date']
+    state = the_data['state']
+    city = the_data['city']
+    park = the_data['park']
+
+    # Constructing the query
+    query = 'insert into Leagues (time, date, state, city, park) values ("'
+    query += time + '", "'
+    query += date + '", '
+    uery += state + '", '
+    uery += city + '", '
+    query += park + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'

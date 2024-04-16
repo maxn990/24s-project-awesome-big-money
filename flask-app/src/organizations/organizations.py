@@ -56,6 +56,55 @@ def add_new_league():
 ## TEAM ROUTES
 #######################################################
 
+
+@organizations.route('/teams', methods=['GET'])
+def get_teams():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Teams')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@organizations.route('/teams', methods=['POST'])
+def add_new_team():
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+    # extracting the variables
+    season = the_data['season']
+    league_id = the_data['league_id']
+    team_name = the_data['teamName']
+    # Constructing the query
+    query = 'INSERT INTO Teams (season, teamName,league_id) VALUES ("{}", "{}", "{}")'.format(season, team_name, league_id)
+    current_app.logger.info(query)
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+    @organizations.route('/teams/<team_id>', methods=['GET'])
+    def get_team_by_id(team_id):
+        cursor = db.get_db().cursor()
+        cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        the_response = make_response(jsonify(json_data))
+        the_response.status_code = 200
+        the_response.mimetype = 'application/json'
+        return the_response
+
+
 @organizations.route('/teamPlayers', methods=['GET'])
 def get_teamPlayers(player_id):
     cursor = db.get_db().cursor()
