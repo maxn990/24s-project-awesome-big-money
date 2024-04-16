@@ -37,10 +37,9 @@ def add_new_player():
     email = the_data['email']
     phone = the_data['phone']
     address = the_data['address']
-    playerId = the_data['player_id']
 
     # Constructing the query
-    query = 'insert into Players (lastName, firstName, email, address, phone, player_id) values ("'
+    query = 'insert into Players (lastName, firstName, email, address, phone) values ("'
     query += last + '", "'
     query += first + '", "'
     query += email + '", '
@@ -111,7 +110,7 @@ def get_coaches():
     the_response.mimetype = 'application/json'
     return the_response
 
-@users.route('/coaches', methods=['POST'])
+@users.route('/Coaches', methods=['POST'])
 def add_new_coach():
     
     # collecting data from the request object 
@@ -123,13 +122,13 @@ def add_new_coach():
     last = the_data['lastName']
     email = the_data['email']
     phone = the_data['phone']
-    address = the_data['address']
+    team_id = the_data['team_id']
 
     # constructing the query
     query = (
-    'INSERT INTO Coaches (firstName, lastName, email, phone, address) '
+    'INSERT INTO Coaches (firstName, lastName, email, phone, team_id) '
     'VALUES ("{}", "{}", "{}", "{}", "{}")'
-    ).format(first, last, email, phone, address)
+    ).format(first, last, email, phone, team_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -156,7 +155,7 @@ def delete_coach(coach_id):
 ## MANAGER ROUTES
 #######################################################
 
-@users.route('/managers', methods=['GET'])
+@users.route('/Managers', methods=['GET'])
 def get_managers():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Managers')
@@ -170,7 +169,7 @@ def get_managers():
     the_response.mimetype = 'application/json'
     return the_response
 
-@users.route('/manager', methods=['POST'])
+@users.route('/Managers', methods=['POST'])
 def add_new_manager():
     
     # collecting data from the request object 
@@ -183,16 +182,14 @@ def add_new_manager():
     email = the_data['email']
     phone = the_data['phone']
     address = the_data['address']
-    manager_id = the_data['manager_id']
 
     # Constructing the query
-    query = 'insert into managers (lastName, firstName, email, address, phone, manager_id) values ("'
+    query = 'insert into Managers (lastName, firstName, email, address, phone) values ("'
     query += last + '", "'
     query += first + '", "'
     query += email + '", '
     query += address + '", '
-    query += phone + '", '
-    query += str(manager_id) + ')'
+    query += phone + ')'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -203,22 +200,22 @@ def add_new_manager():
     return 'Success!'
 
 
-@users.route('/manager/<manger_id>', methods=['DELETE'])
+@users.route('/Managers/<manger_id>', methods=['DELETE'])
 def delete_player_manager(manager_id):
     # Constructing the query
-    query = f'DELETE FROM managers WHERE manager = {manager_id}'
+    query = f'DELETE FROM Managers WHERE Managers = {manager_id}'
     
     # executing and committing the delete statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
     
-    return 'Manager deleted successfully'
+    return 'Managers deleted successfully'
 
-@users.route('/manager/<manager>', methods=['GET'])
+@users.route('/Managers/<Managers>', methods=['GET'])
 def get_manager(manager_id):
     # Constructing the query
-    query = f'SELECT * FROM managers WHERE managers = {manager_id}'
+    query = f'SELECT * FROM managers WHERE Managers = {manager_id}'
     
     # executing the query
     cursor = db.get_db().cursor()
@@ -244,8 +241,8 @@ def get_manager(manager_id):
 ## LEAGUE FANS
 #######################################################
 
-@users.route('/leaguesFans', methods=['GET'])
-def get_leagueFans(league_id):
+@users.route('/LeaguesFans', methods=['GET'])
+def get_LeagueFans(league_id):
     cursor = db.get_db().cursor()
     cursor.execute('''
         SELECT fan.* 
