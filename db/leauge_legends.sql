@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS Coaches
     email     VARCHAR(40)  NOT NULL,
     phone     VARCHAR(15)  NOT NULL,
     address   VARCHAR(100) NOT NULL,
-    team_id   INTEGER      NOT NULL,
+    team_id   INTEGER,
     PRIMARY KEY (coach_id),
     CONSTRAINT fk_11
         FOREIGN KEY (team_id) REFERENCES Teams (team_id)

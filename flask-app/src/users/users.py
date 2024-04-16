@@ -112,28 +112,24 @@ def get_coaches():
     return the_response
 
 @users.route('/coaches', methods=['POST'])
-def add_new_player_coach():
+def add_new_coach():
     
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
 
-    #extracting the variable
-    first = the_data['first_name']
-    last = the_data['last_name']
+    # extracting the variable
+    first = the_data['firstName']
+    last = the_data['lastName']
     email = the_data['email']
     phone = the_data['phone']
-    team_id = the_data['team_id']
-    coach_id = the_data['coach_id']
+    address = the_data['address']
 
-    # Constructing the query
-    query = 'insert into Coaches (coach_id, firstName, lastName, email, phone, team_id) values ("'
-    query += first + '", "'
-    query += last + '", "'
-    query += email + '", '
-    query += phone + '", '
-    query += phone + '", '
-    query += str(team_id) + ')'
+    # constructing the query
+    query = (
+    'INSERT INTO Coaches (firstName, lastName, email, phone, address) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(first, last, email, phone, address)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
