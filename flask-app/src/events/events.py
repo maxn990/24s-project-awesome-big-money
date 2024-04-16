@@ -9,9 +9,10 @@ events = Blueprint('events', __name__)
 #######################################################
 
 @events.route('/practiceAttendance/<player_id>', methods=['GET'])
-def get_player_profile_practice(player_id):
+def get_practice_attendance(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM PracticeAttendance WHERE player_id = "{}"'.format(practice_id, player_id))
+    cursor.execute('SELECT * FROM PracticeAttendance '
+                   'WHERE player_id = "{}"'.format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -23,15 +24,16 @@ def get_player_profile_practice(player_id):
     return the_response
 
 @events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['POST'])
-def add_player_information_practice(practice_id, player_id):
+def add_practice_attendance(practice_id, player_id):
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
 
     # Constructing the query
-    query = 'insert into PracticeAttendance (practice_id, player_id) values ("'
-    query += str(practice_id) + '", "'
-    query += str(player_id) + ')'
+    query = (
+    'INSERT INTO Coaches (practice_id, player_id) '
+    'VALUES ("{}", "{}")'
+    ).format(practice_id, player_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -45,12 +47,11 @@ def add_player_information_practice(practice_id, player_id):
 ## GAME COACHES ROUTES
 #######################################################
 
-
-
-@events.route('/gameCoaches/<coach_id>/<game_id>', methods=['GET'])
+@events.route('/gameCoaches/<coach_id>', methods=['GET'])
 def get_player_profile_coach(coach_id, game_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM gameCoaches WHERE coach_id = {} AND game_id = "{}"'.format(coach_id, game_id))
+    cursor.execute('SELECT * FROM gameCoaches WHERE coach_id = {}'.format
+                   (coach_id, game_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
