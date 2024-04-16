@@ -8,8 +8,26 @@ events = Blueprint('events', __name__)
 ## PRACTICE ATTENDANCE ROUTES
 #######################################################
 
+@events.route('/practiceAttendance', methods=['GET'])
+def get_practice_attendance():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM PracticeAttendance pa '
+                    'JOIN Practices p ON pa.practice_id = p.practice_id '
+                    ' JOIN Players pl ON pa.player_id = pl.player_id;')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
 @events.route('/practiceAttendance/<player_id>', methods=['GET'])
-def get_practice_attendance(player_id):
+def get_practice_attendance_player(player_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM PracticeAttendance '
                    'WHERE player_id = "{}"'.format(player_id))
@@ -46,6 +64,73 @@ def add_practice_attendance():
     db.get_db().commit()
     
     return 'Success!'
+
+@events.route('/practiceAttendance', methods=['DELETE'])
+def remove_practice_attendance():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the varaibles
+    practice_id = data['practice_id']
+    player_id = data['player_id']
+
+    # Constructing the query
+    query = ('DELETE FROM PracticeAttendance WHERE player_id = {} '
+             'AND practice_id = {}').format(player_id, practice_id)
+    current_app.logger.info(query)
+    
+    # Executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    return 'Practice Attendance deleted successfully'
+
+#######################################################
+## PRACTICE ATTENDANCE ROUTES
+#######################################################
+
+@events.route('/gameAttendance', methods=['GET'])
+def get_game_attendance():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM GameAttendance ga '
+                    'JOIN Games g ON ga.game_id = g.game_id '
+                    'JOIN Players pl ON ga.player_id = pl.player_id;')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@events.route('/gameAttendance', methods=['DELETE'])
+def delete_game_attendance():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the varaibles
+    game_id = data['game_id']
+    player_id = data['player_id']
+
+    # Constructing the query
+    query = ('DELETE FROM GameAttendance WHERE player_id = {} '
+             'AND game_id = {}').format(player_id, game_id)
+    current_app.logger.info(query)
+    
+    # Executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    return 'Game Attendance deleted successfully'
+
 
 #######################################################
 ## GAME COACHES ROUTES
@@ -91,7 +176,7 @@ def add_game_coaches():
     return 'Success!'
 
 #######################################################
-## GAMES ROUTES
+## GAMES ROUTES 
 #######################################################
 
 @events.route('/games', methods=['GET'])
@@ -102,7 +187,9 @@ def get_games():
     json_data = []
     data = cursor.fetchall()
     for row in data:
-        json_data.append(dict(zip(row_headers, row)))
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
     response = make_response(jsonify(json_data))
     response.status_code = 200
     response.mimetype = 'application/json'
@@ -151,7 +238,25 @@ def get_practices():
     json_data = []
     data = cursor.fetchall()
     for row in data:
-        json_data.append(dict(zip(row_headers, row)))
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@events.route('/practices/<practice_id>', methods=['GET'])
+def get_practices_id(practice_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(f'SELECT * FROM Practices WHERE practice_id = {practice_id}')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
     response = make_response(jsonify(json_data))
     response.status_code = 200
     response.mimetype = 'application/json'
