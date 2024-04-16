@@ -90,19 +90,19 @@ def add_new_team():
     
     return 'Success!'
 
-    @organizations.route('/teams/<team_id>', methods=['GET'])
-    def get_team_by_id(team_id):
-        cursor = db.get_db().cursor()
-        cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
-        row_headers = [x[0] for x in cursor.description]
-        json_data = []
-        theData = cursor.fetchall()
-        for row in theData:
-            json_data.append(dict(zip(row_headers, row)))
-        the_response = make_response(jsonify(json_data))
-        the_response.status_code = 200
-        the_response.mimetype = 'application/json'
-        return the_response
+@organizations.route('/teams/<team_id>', methods=['GET'])
+def get_team_by_id(team_id):
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 
 @organizations.route('/teamPlayers', methods=['GET'])

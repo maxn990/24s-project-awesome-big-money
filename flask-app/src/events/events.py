@@ -84,7 +84,7 @@ def add_player_information_coach(coach_id, game_id):
 ## GAMES ROUTES
 #######################################################
 
-@organizations.route('/Games', methods=['GET'])
+@events.route('/Games', methods=['GET'])
 def get_league():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Games')
@@ -98,7 +98,7 @@ def get_league():
     the_response.mimetype = 'application/json'
     return the_response
 
-@organizations.route('/Games', methods=['POST'])
+@events.route('/Games', methods=['POST'])
 def add_new_league():
     
     # collecting data from the request object
@@ -137,7 +137,7 @@ def add_new_league():
 ## PRACTICES ROUTES
 #######################################################
 
-@organizations.route('/Practices', methods=['GET'])
+@events.route('/Practices', methods=['GET'])
 def get_league():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Practices')
@@ -151,7 +151,7 @@ def get_league():
     the_response.mimetype = 'application/json'
     return the_response
 
-@organizations.route('/Practices', methods=['POST'])
+@events.route('/Practices', methods=['POST'])
 def add_new_league():
     
     # collecting data from the request object
