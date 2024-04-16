@@ -9,43 +9,40 @@ organizations = Blueprint('organizations', __name__)
 #######################################################
 
 @organizations.route('/leagues', methods=['GET'])
-def get_league():
+def get_leagues():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Leagues')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 @organizations.route('/leagues', methods=['POST'])
-def add_new_league():
-    
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
+def add_leagues():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
 
-    # extracting the variable
-    sportType = the_data['sport_type']
-    name = the_data['name']
-    manager_id = the_data['email']
-    phone = the_data['manager_id']
-    league_id = the_data['league_id']
+    # Extracting the variable
+    sportType = data['sport_type']
+    name = data['name']
+    manager_id = data['email']
+    phone = data['manager_id']
+    league_id = data['league_id']
 
     # Constructing the query
-    query = 'insert into Leagues (sportType, name, manager_id, phone, league_id) values ("'
-    query += sportType + '", "'
-    query += name + '", "'
-    query += manager_id + '", '
-    query += phone + '", '
-    query += league_id + ')'
+    query = (
+    'INSERT INTO Coaches (sportType, name, manager_id, phone, league_id) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(sportType, name, manager_id, phone, league_id)
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
@@ -56,34 +53,37 @@ def add_new_league():
 ## TEAM ROUTES
 #######################################################
 
-
 @organizations.route('/teams', methods=['GET'])
 def get_teams():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Teams')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 @organizations.route('/teams', methods=['POST'])
-def add_new_team():
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
-    # extracting the variables
-    season = the_data['season']
-    league_id = the_data['league_id']
-    team_name = the_data['teamName']
+def add_teams():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the variables
+    season = data['season']
+    league_id = data['league_id']
+    team_name = data['teamName']
+
     # Constructing the query
-    query = 'INSERT INTO Teams (season, teamName,league_id) VALUES ("{}", "{}", "{}")'.format(season, team_name, league_id)
+    query = ('INSERT INTO Teams (season, teamName,league_id) '
+            'VALUES ("{}", "{}", "{}")'.format(season, team_name, league_id))
     current_app.logger.info(query)
-    # executing and committing the insert statement 
+
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
@@ -96,53 +96,39 @@ def get_team_by_id(team_id):
     cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 
-@organizations.route('/teamPlayers', methods=['GET'])
-def get_teamPlayers(player_id):
+@organizations.route('/playerTeams', methods=['GET'])
+def get_playerTeams():
     cursor = db.get_db().cursor()
-    cursor.execute('''
-        SELECT player.* 
-        FROM player
-        JOIN teams ON player.player_id = team.player_id
-        WHERE teams.player_id = %s
-    ''', (player_id,))
-    
+    cursor.execute('SELECT * FROM PlayerTeams')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 @organizations.route('/teamPractices', methods=['GET'])
-def get_teamPractices(practice_id):
+def get_teamPractices():
     cursor = db.get_db().cursor()
-    cursor.execute('''
-        SELECT practice.* 
-        FROM practice
-        JOIN teams ON practice.practice_id = team.practice_id
-        WHERE teams.practice_id = %s
-    ''', (practice_id,))
-    
+    cursor.execute('SELECT * FROM TeamPractices')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response

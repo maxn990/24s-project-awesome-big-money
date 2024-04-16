@@ -16,35 +16,32 @@ def get_players():
     cursor.execute('SELECT * FROM Players')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 @users.route('/players', methods=['POST'])
-def add_new_player():
-    
+def add_players():
     # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+    data = request.json
+    current_app.logger.info(data)
 
     #extracting the variable
-    first = the_data['first_name']
-    last = the_data['last_name']
-    email = the_data['email']
-    phone = the_data['phone']
-    address = the_data['address']
+    first = data['firstName']
+    last = data['lastName']
+    email = data['email']
+    phone = data['phone']
+    address = data['address']
 
     # Constructing the query
-    query = 'insert into Players (lastName, firstName, email, address, phone) values ("'
-    query += last + '", "'
-    query += first + '", "'
-    query += email + '", '
-    query += address + '", '
-    query += phone + ')'
+    query = (
+    'INSERT INTO PlayerProfile (firstName, lastName, email, phone, address) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(first, last, email, phone, address)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -67,31 +64,6 @@ def delete_player(player_id):
     
     return 'Player deleted successfully'
 
-@users.route('/players/<player_id>', methods=['GET'])
-def get_player(player_id):
-    # Constructing the query
-    query = f'SELECT * FROM players WHERE player_id = {player_id}'
-    
-    # executing the query
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    
-    # fetching the player data
-    row_headers = [x[0] for x in cursor.description]
-    player_data = cursor.fetchone()
-    
-    # checking if player exists
-    if player_data is None:
-        return make_response(jsonify({'error': 'Player not found'}), 404)
-    
-    # constructing the JSON response
-    json_data = dict(zip(row_headers, player_data))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    
-    return the_response
-
 #######################################################
 ## COACH ROUTES
 #######################################################
@@ -102,33 +74,32 @@ def get_coaches():
     cursor.execute('SELECT * FROM Coaches')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@users.route('/Coaches', methods=['POST'])
-def add_new_coach():
-    
+@users.route('/coaches', methods=['POST'])
+def add_coach():
     # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+    data = request.json
+    current_app.logger.info(data)
 
     # extracting the variable
-    first = the_data['firstName']
-    last = the_data['lastName']
-    email = the_data['email']
-    phone = the_data['phone']
-    team_id = the_data['team_id']
+    first = data['firstName']
+    last = data['lastName']
+    email = data['email']
+    phone = data['phone']
+    address = data['address']
 
     # constructing the query
     query = (
-    'INSERT INTO Coaches (firstName, lastName, email, phone, team_id) '
+    'INSERT INTO Coaches (firstName, lastName, email, phone, address) '
     'VALUES ("{}", "{}", "{}", "{}", "{}")'
-    ).format(first, last, email, phone, team_id)
+    ).format(first, last, email, phone, address)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -155,41 +126,38 @@ def delete_coach(coach_id):
 ## MANAGER ROUTES
 #######################################################
 
-@users.route('/Managers', methods=['GET'])
+@users.route('/managers', methods=['GET'])
 def get_managers():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Managers')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@users.route('/Managers', methods=['POST'])
-def add_new_manager():
-    
+@users.route('/managers', methods=['POST'])
+def add_managers():
     # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+    data = request.json
+    current_app.logger.info(data)
 
     #extracting the variable
-    first = the_data['first_name']
-    last = the_data['last_name']
-    email = the_data['email']
-    phone = the_data['phone']
-    address = the_data['address']
+    first = data['first_name']
+    last = data['last_name']
+    email = data['email']
+    phone = data['phone']
+    address = data['address']
 
     # Constructing the query
-    query = 'insert into Managers (lastName, firstName, email, address, phone) values ("'
-    query += last + '", "'
-    query += first + '", "'
-    query += email + '", '
-    query += address + '", '
-    query += phone + ')'
+    query = (
+    'INSERT INTO Managers (firstName, lastName, email, phone, address) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(first, last, email, phone, address)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -201,7 +169,7 @@ def add_new_manager():
 
 
 @users.route('/Managers/<manger_id>', methods=['DELETE'])
-def delete_player_manager(manager_id):
+def delete_managers(manager_id):
     # Constructing the query
     query = f'DELETE FROM Managers WHERE Managers = {manager_id}'
     
@@ -212,55 +180,47 @@ def delete_player_manager(manager_id):
     
     return 'Managers deleted successfully'
 
-@users.route('/Managers/<Managers>', methods=['GET'])
-def get_manager(manager_id):
-    # Constructing the query
-    query = f'SELECT * FROM managers WHERE Managers = {manager_id}'
-    
-    # executing the query
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    
-    # fetching the player data
-    row_headers = [x[0] for x in cursor.description]
-    player_data = cursor.fetchone()
-    
-    # checking if player exists
-    if player_data is None:
-        return make_response(jsonify({'error': 'Player not found'}), 404)
-    
-    # constructing the JSON response
-    json_data = dict(zip(row_headers, player_data))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    
-    return the_response
-
 #######################################################
 ## LEAGUE FANS
 #######################################################
 
-@users.route('/LeaguesFans', methods=['GET'])
-def get_LeagueFans(league_id):
+@users.route('/leagueFans', methods=['GET'])
+def get_leagueFans():
     cursor = db.get_db().cursor()
-    cursor.execute('''
-        SELECT fan.* 
-        FROM fan
-        JOIN leagues ON fan.fan_id = leagues.fan_id
-        WHERE leagues.league_id = %s
-    ''', (league_id,))
+    cursor.execute('SELECT * FROM LeagueFans')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+#######################################################
+## PLAYER TEAMS
+#######################################################
+
+@users.route('/playerTeams', methods=['GET'])
+def get_playerTeams():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM PlayerTeams')
     
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
     
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+    
+#######################################################
+## FANS
+#######################################################
 
 @users.route('/fans', methods=['GET'])
 def get_fans():
@@ -268,109 +228,34 @@ def get_fans():
     cursor.execute('SELECT * FROM Fans')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
 @users.route('/fans', methods=['POST'])
-def add_new_fan():
+def add_fans():
     # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+    data = request.json
+    current_app.logger.info(data)
     
     # extracting the variables
-    first = the_data['first_name']
-    last = the_data['last_name']
-    email = the_data['email']
-    phone = the_data['phone']
-    address = the_data['address']
+    first = data['firstName']
+    last = data['lastName']
+    email = data['email']
+    phone = data['phone']
+    address = data['address']
     
     # Constructing the query
-    query = 'INSERT INTO Fans (firstName, lastName, email, address, phone) VALUES ("'
-    query += first + '", "'
-    query += last + '", "'
-    query += email + '", "'
-    query += address + '", "'
-    query += phone + '")'
+    query = (
+    'INSERT INTO Fans (firstName, lastName, email, address, phone) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(first, last, email, address, phone)
     current_app.logger.info(query)
     
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
-    
-    return 'Success!'
-
-#######################################################
-## PLAYER TEAMS
-#######################################################
-
-@users.route('/playerTeams', methods=['GET'])
-def get_playerTeams(team_id):
-    cursor = db.get_db().cursor()
-    cursor.execute('''
-        SELECT teams.* 
-        FROM teams
-        JOIN players ON team.team_id = players.team_id
-        WHERE players.team_id = %s
-    ''', (team_id,))
-    
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
-    
-#######################################################
-## FANS ROUTES
-#######################################################
-
-@users.route('/Fans', methods=['GET'])
-def get_league():
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Fans')
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
-
-@users.route('/Fans', methods=['POST'])
-def add_new_league():
-    
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
-
-    # extracting the variable
-    first = the_data['firstName']
-    last = the_data['lastName']
-    address = the_data['address']
-    phone = the_data['phone']
-    email = the_data['email']
-
-    # Constructing the query
-    query = 'insert into Leagues (firstName, lastName, address, phone, email) values ("'
-    query += first + '", "'
-    query += last + '", '
-    query += address + '", '
-    query += phone + '", '
-    query += email + ')'
-    current_app.logger.info(query)
-
     # executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
