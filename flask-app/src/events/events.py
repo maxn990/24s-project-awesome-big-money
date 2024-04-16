@@ -138,7 +138,7 @@ def add_new_league():
 #######################################################
 
 @events.route('/Practices', methods=['GET'])
-def get_league():
+def get_practices():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Practices')
     row_headers = [x[0] for x in cursor.description]
