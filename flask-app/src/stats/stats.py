@@ -197,3 +197,69 @@ def update_player_profile_team(team_id, game_id):
     db.get_db().commit()
     
     return 'Success!'
+
+
+
+#######################################################
+## TEAM PROFILE ROUTES
+#######################################################
+
+
+@stats.route('/teamProfile/<team_id>/<sport>', methods=['GET'])
+def get_team_profile(team_id, sport):
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM TeamProfile WHERE team_id = {} AND sport = "{}"'.format(team_id, sport))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@stats.route('/playerProfile/<team_id>/<sport>', methods=['POST'])
+def add_team_information(team_id, sport):
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    teamId = the_data['team_id']
+    sport = the_data['sport']
+
+    # Constructing the query
+    query = 'insert into TeamProfile (team_id, sport) values ("'
+    query += str(team_id) + '", "'
+    query += sport + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+@stats.route('/teamProfile/<team_id>/<sport>', methods=['PUT'])
+def update_player_profile(team_id, sport):
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    points = the_data['points']
+    assists = the_data['assists']
+    fouls = the_data['fouls']
+
+    # Constructing the query
+    query = 'UPDATE TeamProfile SET points = {}, assists = {}, fouls = {} WHERE team_id = {} AND sport = "{}"'.format(points, assists, fouls, team_id, sport)
+    current_app.logger.info(query)
+
+    # executing and committing the update statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'

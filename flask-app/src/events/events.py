@@ -41,6 +41,45 @@ def add_player_information_practice(practice_id, player_id):
     
     return 'Success!'
 
+
+#######################################################
+## GAME ATTENDANCE ROUTES
+#######################################################
+
+@events.route('/practiceAttendance/<player_id>/<game_id>', methods=['GET'])
+def get_player_profile_game(player_id, game_id):
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM GameAttendance WHERE player_id = "{}"'.format(game_id, player_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@events.route('/gameAttendance/<player_id>/<game_id>', methods=['POST'])
+def add_player_information_game(game_id, player_id):
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # Constructing the query
+    query = 'insert into GameAttendance (game_id, player_id) values ("'
+    query += str(game_id) + '", "'
+    query += str(player_id) + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
 #######################################################
 ## GAME COACHES ROUTES
 #######################################################

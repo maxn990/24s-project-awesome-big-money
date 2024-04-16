@@ -380,3 +380,22 @@ def add_new_league():
     db.get_db().commit()
     
     return 'Success!'
+
+
+#######################################################
+## FRIENDLIST ROUTE
+#######################################################
+
+@users.route('/FriendList/<fan_id>/<friend_id>', methods=['GET'])
+def get_friend_date(fan_id, friend_id):
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT dateAdded FROM Fans WHERE fan_id = friend_id')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
