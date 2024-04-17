@@ -103,11 +103,11 @@ def add_teams():
     # Extracting the variables
     season = data['season']
     league_id = data['league_id']
-    team_name = data['teamName']
+    teamName = data['teamName']
 
     # Constructing the query
     query = ('INSERT INTO Teams (season, teamName,league_id) '
-            'VALUES ("{}", "{}", "{}")'.format(season, team_name, league_id))
+            'VALUES ("{}", "{}", "{}")'.format(season, teamName, league_id))
     current_app.logger.info(query)
 
     # Executing and committing the insert statement 
@@ -117,10 +117,11 @@ def add_teams():
     
     return 'Success!'
 
+
 @organizations.route('/Teams/<team_id>', methods=['GET'])
 def get_team_by_id(team_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
+    cursor.execute('SELECT * FROM Teams WHERE league_id = %s', (league_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
