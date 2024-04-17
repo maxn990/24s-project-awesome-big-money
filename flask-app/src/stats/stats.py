@@ -77,6 +77,19 @@ def update_player_profile():
     
     return 'Success!'
 
+    
+    @users.route('/PlayerProfile/<practice_id>/<sport>', methods=['DELETE'])
+def delete_PlayerProfile(player_id, sport):
+    # Constructing the query
+    query = f'DELETE FROM PlayerProfile WHERE PlayerProfile = {player_id}'
+    
+    # executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'PlayerProfile deleted successfully'
+
 
 #######################################################
 ## PLAYER STATS ROUTES

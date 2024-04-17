@@ -147,8 +147,8 @@ def add_managers():
     current_app.logger.info(data)
 
     #extracting the variable
-    first = data['first_name']
-    last = data['last_name']
+    first = data['firstName']
+    last = data['lastName']
     email = data['email']
     phone = data['phone']
     address = data['address']
@@ -179,6 +179,35 @@ def delete_managers(manager_id):
     db.get_db().commit()
     
     return 'Managers deleted successfully'
+
+
+    @stats.route('/Managers/<manager_id>', methods=['PUT'])
+def update_Managers(manager_id):
+    # collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+   #extracting the variable
+    first = data['firstName']
+    last = data['lastName']
+    email = data['email']
+    phone = data['phone']
+    address = data['address']
+
+
+    # Constructing the query
+    query = ('UPDATE Managers SET firstName = {}, lastName = {}, email = {}, phone = {}, address = {} '
+             'WHERE manager_id = {}'.format
+             (firstName, lastName, email, phone, address, manager_id))
+    current_app.logger.info(query)
+
+    # executing and committing the update statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
 
 #######################################################
 ## LEAGUE FANS

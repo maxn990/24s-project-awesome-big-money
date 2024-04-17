@@ -8,7 +8,7 @@ organizations = Blueprint('organizations', __name__)
 ## LEAGUE ROUTES
 #######################################################
 
-@organizations.route('/leagues', methods=['GET'])
+@organizations.route('/Leagues', methods=['GET'])
 def get_leagues():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Leagues')
@@ -22,7 +22,7 @@ def get_leagues():
     response.mimetype = 'application/json'
     return response
 
-@organizations.route('/leagues', methods=['POST'])
+@organizations.route('/Leagues', methods=['POST'])
 def add_leagues():
     # Collecting data from the request object
     data = request.json
@@ -49,11 +49,38 @@ def add_leagues():
     
     return 'Success!'
 
+
+    @stats.route('/Leagues/<league_id>', methods=['PUT'])
+def update_Leagues(league_id):
+    # collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+   #extracting the variable
+    sportType = data['sportType']
+    name = data['name']
+    manager_id = data['manager_id']
+
+
+    # Constructing the query
+    query = ('UPDATE League SET sportType = {}, name = {}, manager_id = {} '
+             'WHERE league_id = {}'.format
+             (sportType, name, manager_id, league_id))
+    current_app.logger.info(query)
+
+    # executing and committing the update statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+    
+
 #######################################################
 ## TEAM ROUTES
 #######################################################
 
-@organizations.route('/teams', methods=['GET'])
+@organizations.route('/Teams', methods=['GET'])
 def get_teams():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Teams')
@@ -67,7 +94,7 @@ def get_teams():
     response.mimetype = 'application/json'
     return response
 
-@organizations.route('/teams', methods=['POST'])
+@organizations.route('/Teams', methods=['POST'])
 def add_teams():
     # Collecting data from the request object
     data = request.json
@@ -90,7 +117,7 @@ def add_teams():
     
     return 'Success!'
 
-@organizations.route('/teams/<team_id>', methods=['GET'])
+@organizations.route('/Teams/<team_id>', methods=['GET'])
 def get_team_by_id(team_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Teams WHERE team_id = %s', (team_id,))
@@ -103,6 +130,19 @@ def get_team_by_id(team_id):
     response.status_code = 200
     response.mimetype = 'application/json'
     return response
+
+ 
+ @users.route('/Teams/<team_id>', methods=['DELETE'])
+def delete_Teams(team_id):
+    # Constructing the query
+    query = f'DELETE FROM Teams WHERE Teams = {team_id}'
+    
+    # executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Team deleted successfully'
 
 
 @organizations.route('/playerTeams', methods=['GET'])
@@ -132,3 +172,4 @@ def get_teamPractices():
     response.status_code = 200
     response.mimetype = 'application/json'
     return response
+

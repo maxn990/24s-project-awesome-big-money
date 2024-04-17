@@ -143,7 +143,7 @@ def add_games():
 ## PRACTICES ROUTES
 #######################################################
 
-@events.route('/practices', methods=['GET'])
+@events.route('/Practices', methods=['GET'])
 def get_practices():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Practices')
@@ -157,7 +157,7 @@ def get_practices():
     response.mimetype = 'application/json'
     return response
 
-@events.route('/practices', methods=['POST'])
+@events.route('/Practices', methods=['POST'])
 def add_practices():
     # Collecting data from the request object
     data = request.json
@@ -183,3 +183,44 @@ def add_practices():
     db.get_db().commit()
     
     return 'Success!'
+
+    @users.route('/Practices/<practice_id>', methods=['DELETE'])
+def delete_Practices(practice_id):
+    # Constructing the query
+    query = f'DELETE FROM Practices WHERE Practices = {practice_id}'
+    
+    # executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Practice deleted successfully'
+
+
+@stats.route('/Practices/<practice_id>', methods=['PUT'])
+def update_Practices(practice_id):
+    # collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+   #extracting the variable
+    time = data['time']
+    date = data['date']
+    state = data['state']
+    city = data['city']
+    park = data['park']
+
+
+    # Constructing the query
+    query = ('UPDATE Practices SET time = {}, date = {}, state = {}, city = {}, park = {} '
+             'WHERE practice_id = {}'.format
+             (time, date, state, city, park, practice_id))
+    current_app.logger.info(query)
+
+    # executing and committing the update statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+    
