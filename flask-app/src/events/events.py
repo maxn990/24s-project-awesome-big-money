@@ -8,111 +8,186 @@ events = Blueprint('events', __name__)
 ## PRACTICE ATTENDANCE ROUTES
 #######################################################
 
+@events.route('/practiceAttendance', methods=['GET'])
+def get_practice_attendance():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM PracticeAttendance pa '
+                    'JOIN Practices p ON pa.practice_id = p.practice_id '
+                    ' JOIN Players pl ON pa.player_id = pl.player_id;')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
 @events.route('/practiceAttendance/<player_id>', methods=['GET'])
-def get_player_profile_practice(player_id):
+def get_practice_attendance_player(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM PracticeAttendance WHERE player_id = "{}"'.format(practice_id, player_id))
+    cursor.execute('SELECT * FROM PracticeAttendance '
+                   'WHERE player_id = "{}"'.format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@events.route('/practiceAttendance/<practice_id>/<player_id>', methods=['POST'])
-def add_player_information_practice(practice_id, player_id):
-    # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+@events.route('/practiceAttendance', methods=['POST'])
+def add_practice_attendance():
+    # Collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the varaibles
+    practice_id = data['practice_id']
+    player_id = data['player_id']
 
     # Constructing the query
-    query = 'insert into PracticeAttendance (practice_id, player_id) values ("'
-    query += str(practice_id) + '", "'
-    query += str(player_id) + ')'
+    query = (
+    'INSERT INTO Coaches (practice_id, player_id) '
+    'VALUES ("{}", "{}")'
+    ).format(practice_id, player_id)
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
     
     return 'Success!'
 
+@events.route('/practiceAttendance', methods=['DELETE'])
+def remove_practice_attendance():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
 
-#######################################################
-## GAME ATTENDANCE ROUTES
-#######################################################
-
-@events.route('/practiceAttendance/<player_id>/<game_id>', methods=['GET'])
-def get_player_profile_game(player_id, game_id):
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM GameAttendance WHERE player_id = "{}"'.format(game_id, player_id))
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
-
-@events.route('/gameAttendance/<player_id>/<game_id>', methods=['POST'])
-def add_player_information_game(game_id, player_id):
-    # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+    # Extracting the varaibles
+    practice_id = data['practice_id']
+    player_id = data['player_id']
 
     # Constructing the query
-    query = 'insert into GameAttendance (game_id, player_id) values ("'
-    query += str(game_id) + '", "'
-    query += str(player_id) + ')'
+    query = ('DELETE FROM PracticeAttendance WHERE player_id = {} '
+             'AND practice_id = {}').format(player_id, practice_id)
     current_app.logger.info(query)
-
-    # executing and committing the insert statement 
+    
+    # Executing and committing the delete statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
+
+    return 'Practice Attendance deleted successfully'
+
+#######################################################
+## PRACTICE ATTENDANCE ROUTES
+#######################################################
+
+@events.route('/gameAttendance', methods=['GET'])
+def get_GameAttendance():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM GameAttendance ga '
+                    'JOIN Games g ON ga.game_id = g.game_id '
+                    'JOIN Players pl ON ga.player_id = pl.player_id')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@events.route('/gameAttendance/<player_id>', methods=['GET'])
+def get_game_attendance_player_id(player_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM GameAttendance ga '
+                    'JOIN Games g ON ga.game_id = g.game_id '
+                    'JOIN Players pl ON ga.player_id = pl.player_id '
+                    'WHERE ga.player_id = {}').format(player_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@events.route('/gameAttendance', methods=['DELETE'])
+def delete_GameAttendance():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the varaibles
+    game_id = data['game_id']
+    player_id = data['player_id']
+
+    # Constructing the query
+    query = ('DELETE FROM GameAttendance WHERE player_id = {} '
+             'AND game_id = {}').format(player_id, game_id)
+    current_app.logger.info(query)
     
-    return 'Success!'
+    # Executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    return 'Game Attendance deleted successfully'
 
 
 #######################################################
 ## GAME COACHES ROUTES
 #######################################################
 
-
-
-@events.route('/gameCoaches/<coach_id>/<game_id>', methods=['GET'])
-def get_player_profile_coach(coach_id, game_id):
+@events.route('/gameCoaches/<coach_id>', methods=['GET'])
+def get_game_coaches(coach_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM gameCoaches WHERE coach_id = {} AND game_id = "{}"'.format(coach_id, game_id))
+    cursor.execute('SELECT * FROM GameCoaches WHERE coach_id = {}'.format
+                   (coach_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
+    data = cursor.fetchall()
+    for row in data:
         json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@events.route('/gameCoaches/<coach_id>/<game_id>', methods=['POST'])
-def add_player_information_coach(coach_id, game_id):
-    # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
+@events.route('/gameCoaches', methods=['POST'])
+def add_GameCoaches():
+    # Collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the varaibles
+    coach_id = data['coach_id']
+    game_id = data['game_id']
 
     # Constructing the query
-    query = 'insert into GameCoaches (coach_id, game_id) values ("'
-    query += str(coach_id) + '", "'
-    query += str(game_id) + ')'
+    query = (
+    'INSERT INTO GameCoaches (coach_id, game_id) '
+    'VALUES ("{}", "{}")'
+    ).format(coach_id, game_id)
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
@@ -120,51 +195,49 @@ def add_player_information_coach(coach_id, game_id):
     return 'Success!'
 
 #######################################################
-## GAMES ROUTES
+## GAMES ROUTES 
 #######################################################
 
-@organizations.route('/Games', methods=['GET'])
-def get_league():
+@events.route('/games', methods=['GET'])
+def get_games():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Games')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@organizations.route('/Games', methods=['POST'])
-def add_new_league():
-    
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
+@events.route('/games', methods=['POST'])
+def add_games():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
 
-    # extracting the variable
-    date = the_data['date']
-    winner_id = the_data['winner_id']
-    time = the_data['time']
-    referee = the_data['referee']
-    state = the_data['state']
-    city = the_data['city']
-    park = the_data['park']
+    # Extracting the variable
+    date = data['date']
+    winner_id = data['winner_id']
+    loser_id = data['loser_id']
+    time = data['time']
+    referee = data['referee']
+    state = data['state']
+    city = data['city']
+    park = data['park']
 
     # Constructing the query
-    query = 'insert into Leagues (date, winner_id, time, referee, state, city, park) values ("'
-    query += date + '", "'
-    query += winner_id + '", "'
-    query += time + '", '
-    query += referee + '", '
-    uery += state + '", '
-    uery += city + '", '
-    query += park + ')'
+    query = (
+    'INSERT INTO Games (date, winner_id, loser_id, time, referee, state, city, park) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'
+    ).format(date, winner_id, loser_id, time, referee, state, city, park)
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
@@ -176,46 +249,102 @@ def add_new_league():
 ## PRACTICES ROUTES
 #######################################################
 
-@organizations.route('/Practices', methods=['GET'])
-def get_league():
+@events.route('/practices', methods=['GET'])
+def get_practices():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Practices')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-@organizations.route('/Practices', methods=['POST'])
-def add_new_league():
-    
-    # collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
+@events.route('/practices/<practice_id>', methods=['GET'])
+def get_practices_id(practice_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(f'SELECT * FROM Practices WHERE practice_id = {practice_id}')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
 
-    # extracting the variable
-    date = the_data['time']
-    time = the_data['date']
-    state = the_data['state']
-    city = the_data['city']
-    park = the_data['park']
+@events.route('/practices', methods=['POST'])
+def add_practices():
+    # Collecting data from the request object
+    data = request.json
+    current_app.logger.info(data)
+
+    # Extracting the variable
+    date = data['time']
+    time = data['date']
+    state = data['state']
+    city = data['city']
+    park = data['park']
 
     # Constructing the query
-    query = 'insert into Leagues (time, date, state, city, park) values ("'
-    query += time + '", "'
-    query += date + '", '
-    uery += state + '", '
-    uery += city + '", '
-    query += park + ')'
-    current_app.logger.info(query)
+    query = (
+    'INSERT INTO Games (date, time, state, city, park) '
+    'VALUES ("{}", "{}", "{}", "{}", "{}")'
+    ).format(date, time, state, city, park)
+    current_app.logger.info(query)    
 
-    # executing and committing the insert statement 
+    # Executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
     
     return 'Success!'
+
+@events.route('/practices/<practice_id>', methods=['DELETE'])
+def delete_Practices(practice_id):
+    # Constructing the query
+    query = f'DELETE FROM Practices WHERE Practices = {practice_id}'
+    
+    # executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Practice deleted successfully'
+
+
+@events.route('/practices/<practice_id>', methods=['PUT'])
+def update_Practices(practice_id):
+    # collecting data from the request object 
+    data = request.json
+    current_app.logger.info(data)
+
+   #extracting the variable
+    time = data['time']
+    date = data['date']
+    state = data['state']
+    city = data['city']
+    park = data['park']
+
+
+    # Constructing the query
+    query = ('UPDATE Practices SET time = {}, date = {}, state = {}, city = {}, park = {} '
+             'WHERE practice_id = {}'.format
+             (time, date, state, city, park, practice_id))
+    current_app.logger.info(query)
+
+    # executing and committing the update statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+    
