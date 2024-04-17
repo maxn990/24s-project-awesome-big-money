@@ -96,7 +96,26 @@ def get_game_attendance():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM GameAttendance ga '
                     'JOIN Games g ON ga.game_id = g.game_id '
-                    'JOIN Players pl ON ga.player_id = pl.player_id;')
+                    'JOIN Players pl ON ga.player_id = pl.player_id')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@events.route('/gameAttendance/<player_id>', methods=['GET'])
+def get_game_attendance_player_id(player_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM GameAttendance ga '
+                    'JOIN Games g ON ga.game_id = g.game_id '
+                    'JOIN Players pl ON ga.player_id = pl.player_id '
+                    'WHERE ga.player_id = {}').format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()

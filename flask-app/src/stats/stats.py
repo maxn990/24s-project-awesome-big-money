@@ -13,7 +13,8 @@ stats = Blueprint('stats', __name__)
 @stats.route('/playerProfile', methods=['GET'])
 def get_player_profile():
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM PlayerProfile')
+    cursor.execute('SELECT * FROM PlayerProfile pa '
+                    'JOIN Players p ON pa.player_id = p.player_id')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
@@ -23,6 +24,21 @@ def get_player_profile():
     response.status_code = 200
     response.mimetype = 'application/json'
     return response
+
+@stats.route('/playerProfile/<player_id>', methods=['GET'])
+def get_player_profile_player_id(player_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(f'SELECT * FROM PlayerProfile WHERE player_id = {player_id}')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
 
 @stats.route('/playerProfile', methods=['POST'])
 def add_player_profile():
@@ -82,15 +98,38 @@ def update_player_profile():
 ## PLAYER STATS ROUTES
 #######################################################
 
-@stats.route('/playerStats/<player_id>/<game_id>', methods=['GET'])
-def get_player_stats(player_id, game_id):
+@stats.route('/playerStats/<player_id>', methods=['GET'])
+def get_player_stats(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM playerStats WHERE player_id = {} AND game_id = "{}"'.format(player_id, game_id))
+    cursor.execute(('SELECT * FROM PlayerStats ps '
+                    'JOIN Games g ON ps.game_id = g.game_id '
+                    'WHERE ps.player_id = {};').format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
     for row in data:
-        json_data.append(dict(zip(row_headers, row)))
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@stats.route('/playerStats/<player_id>/<game_id>', methods=['GET'])
+def get_player_stats_game_id(player_id,game_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM PlayerStats ps '
+                    'JOIN Games g ON ps.game_id = g.game_id '
+                    'WHERE ps.player_id = {} AND ps.game_id = {};').format
+                    (player_id, game_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
     response = make_response(jsonify(json_data))
     response.status_code = 200
     response.mimetype = 'application/json'
@@ -107,7 +146,7 @@ def add_player_stats(player_id, game_id):
     game_id = data['game_id']
 
     # Constructing the query
-    query = 'insert into playerStats (player_id, game_id) values ("'
+    query = 'insert into PlayerStats (player_id, game_id) values ("'
     query += str(player_id) + '", "'
     query += game_id + ')'
     current_app.logger.info(query)
