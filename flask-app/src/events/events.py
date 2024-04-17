@@ -8,7 +8,7 @@ events = Blueprint('events', __name__)
 ## PRACTICE ATTENDANCE ROUTES
 #######################################################
 
-@events.route('/practiceAttendance', methods=['GET'])
+@events.route('/PracticeAttendance', methods=['GET'])
 def get_practice_attendance():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM PracticeAttendance pa '
@@ -26,7 +26,7 @@ def get_practice_attendance():
     response.mimetype = 'application/json'
     return response
 
-@events.route('/practiceAttendance/<player_id>', methods=['GET'])
+@events.route('/PracticeAttendance/<player_id>', methods=['GET'])
 def get_practice_attendance_player(player_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM PracticeAttendance '
@@ -41,7 +41,7 @@ def get_practice_attendance_player(player_id):
     response.mimetype = 'application/json'
     return response
 
-@events.route('/practiceAttendance', methods=['POST'])
+@events.route('/PracticeAttendance', methods=['POST'])
 def add_practice_attendance():
     # Collecting data from the request object 
     data = request.json
@@ -65,7 +65,7 @@ def add_practice_attendance():
     
     return 'Success!'
 
-@events.route('/practiceAttendance', methods=['DELETE'])
+@events.route('/PracticeAttendance', methods=['DELETE'])
 def remove_practice_attendance():
     # Collecting data from the request object
     data = request.json
@@ -91,8 +91,8 @@ def remove_practice_attendance():
 ## PRACTICE ATTENDANCE ROUTES
 #######################################################
 
-@events.route('/gameAttendance', methods=['GET'])
-def get_game_attendance():
+@events.route('/GameAttendance', methods=['GET'])
+def get_GameAttendance():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM GameAttendance ga '
                     'JOIN Games g ON ga.game_id = g.game_id '
@@ -109,8 +109,8 @@ def get_game_attendance():
     response.mimetype = 'application/json'
     return response
 
-@events.route('/gameAttendance', methods=['DELETE'])
-def delete_game_attendance():
+@events.route('/GameAttendance', methods=['DELETE'])
+def delete_GameAttendance():
     # Collecting data from the request object
     data = request.json
     current_app.logger.info(data)
@@ -136,7 +136,7 @@ def delete_game_attendance():
 ## GAME COACHES ROUTES
 #######################################################
 
-@events.route('/gameCoaches/<coach_id>', methods=['GET'])
+@events.route('/GameCoaches/<coach_id>', methods=['GET'])
 def get_game_coaches(coach_id):
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM GameCoaches WHERE coach_id = {}'.format
@@ -151,8 +151,8 @@ def get_game_coaches(coach_id):
     response.mimetype = 'application/json'
     return response
 
-@events.route('/gameCoaches', methods=['POST'])
-def add_game_coaches():
+@events.route('/GameCoaches', methods=['POST'])
+def add_GameCoaches():
     # Collecting data from the request object 
     data = request.json
     current_app.logger.info(data)
@@ -179,7 +179,7 @@ def add_game_coaches():
 ## GAMES ROUTES 
 #######################################################
 
-@events.route('/games', methods=['GET'])
+@events.route('/Games', methods=['GET'])
 def get_games():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Games')
@@ -195,7 +195,7 @@ def get_games():
     response.mimetype = 'application/json'
     return response
 
-@events.route('/games', methods=['POST'])
+@events.route('/Games', methods=['POST'])
 def add_games():
     # Collecting data from the request object
     data = request.json

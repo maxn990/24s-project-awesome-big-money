@@ -146,7 +146,7 @@ def delete_Teams(team_id):
     return 'Team deleted successfully'
 
 
-@organizations.route('/playerTeams', methods=['GET'])
+@organizations.route('/PlayerTeams', methods=['GET'])
 def get_playerTeams():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM PlayerTeams')
@@ -160,7 +160,7 @@ def get_playerTeams():
     response.mimetype = 'application/json'
     return response
 
-@organizations.route('/teamPractices', methods=['GET'])
+@organizations.route('/TeamPractices', methods=['GET'])
 def get_teamPractices():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM TeamPractices')

@@ -10,7 +10,7 @@ users = Blueprint('users', __name__)
 ## PLAYER ROUTES
 #######################################################
 
-@users.route('/players', methods=['GET'])
+@users.route('/Players', methods=['GET'])
 def get_players():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Players')
@@ -24,7 +24,7 @@ def get_players():
     response.mimetype = 'application/json'
     return response
 
-@users.route('/players', methods=['POST'])
+@users.route('/Players', methods=['POST'])
 def add_players():
     # collecting data from the request object 
     data = request.json
@@ -52,10 +52,10 @@ def add_players():
     return 'Success!'
 
 
-@users.route('/players/<player_id>', methods=['DELETE'])
+@users.route('/Players/<player_id>', methods=['DELETE'])
 def delete_player(player_id):
     # Constructing the query
-    query = f'DELETE FROM players WHERE player_id = {player_id}'
+    query = f'DELETE FROM Players WHERE player_id = {player_id}'
     
     # executing and committing the delete statement 
     cursor = db.get_db().cursor()
@@ -68,7 +68,7 @@ def delete_player(player_id):
 ## COACH ROUTES
 #######################################################
 
-@users.route('/coaches', methods=['GET'])
+@users.route('/Coaches', methods=['GET'])
 def get_coaches():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Coaches')
@@ -82,7 +82,7 @@ def get_coaches():
     response.mimetype = 'application/json'
     return response
 
-@users.route('/coaches', methods=['POST'])
+@users.route('/Coaches', methods=['POST'])
 def add_coach():
     # collecting data from the request object 
     data = request.json
@@ -109,10 +109,10 @@ def add_coach():
     
     return 'Success!'
 
-@users.route('/coaches/<coach_id>', methods=['DELETE'])
+@users.route('/Coaches/<coach_id>', methods=['DELETE'])
 def delete_coach(coach_id):
     # Constructing the query
-    query = 'DELETE FROM coaches WHERE coach_id = {}'.format(coach_id)
+    query = 'DELETE FROM Coaches WHERE coach_id = {}'.format(coach_id)
     
     # executing and committing the delete statement 
     cursor = db.get_db().cursor()
@@ -126,7 +126,7 @@ def delete_coach(coach_id):
 ## MANAGER ROUTES
 #######################################################
 
-@users.route('/managers', methods=['GET'])
+@users.route('/Managers', methods=['GET'])
 def get_managers():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Managers')
@@ -140,7 +140,7 @@ def get_managers():
     response.mimetype = 'application/json'
     return response
 
-@users.route('/managers', methods=['POST'])
+@users.route('/Managers', methods=['POST'])
 def add_managers():
     # collecting data from the request object 
     data = request.json
@@ -213,7 +213,7 @@ def update_Managers(manager_id):
 ## LEAGUE FANS
 #######################################################
 
-@users.route('/leagueFans', methods=['GET'])
+@users.route('/LeagueFans', methods=['GET'])
 def get_leagueFans():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM LeagueFans')
@@ -231,7 +231,7 @@ def get_leagueFans():
 ## PLAYER TEAMS
 #######################################################
 
-@users.route('/playerTeams', methods=['GET'])
+@users.route('/PlayerTeams', methods=['GET'])
 def get_playerTeams():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM PlayerTeams')
@@ -251,7 +251,7 @@ def get_playerTeams():
 ## FANS
 #######################################################
 
-@users.route('/fans', methods=['GET'])
+@users.route('/Fans', methods=['GET'])
 def get_fans():
     cursor = db.get_db().cursor()
     cursor.execute('SELECT * FROM Fans')
@@ -265,7 +265,7 @@ def get_fans():
     response.mimetype = 'application/json'
     return response
 
-@users.route('/fans', methods=['POST'])
+@users.route('/Fans', methods=['POST'])
 def add_fans():
     # collecting data from the request object 
     data = request.json
