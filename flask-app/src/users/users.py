@@ -82,6 +82,23 @@ def get_coaches():
     response.mimetype = 'application/json'
     return response
 
+
+@users.route('/coaches/<league_id>', methods=['GET'])
+def get_coaches_league_id(league_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM Coaches c '
+                   'JOIN Teams t ON c.team_id = t.team_id '
+                    'WHERE t.league_id = {};').format(league_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
 @users.route('/coaches', methods=['POST'])
 def add_coach():
     # collecting data from the request object 

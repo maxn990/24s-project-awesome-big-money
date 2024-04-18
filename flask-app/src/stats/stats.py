@@ -28,7 +28,9 @@ def get_player_profile():
 @stats.route('/playerProfile/<player_id>', methods=['GET'])
 def get_player_profile_player_id(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute(f'SELECT * FROM PlayerProfile WHERE player_id = {player_id}')
+    cursor.execute(('SELECT * FROM PlayerProfile pa '
+                    'JOIN Players p ON pa.player_id = p.player_id '
+                    'WHERE pa.player_id = {}').format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
@@ -213,6 +215,23 @@ def get_team_stats(team_id, game_id):
     response.status_code = 200
     response.mimetype = 'application/json'
     return response
+
+@stats.route('/teamStats/<coach_id>', methods=['GET'])
+def get_team_stats_coach_id(coach_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM TeamStats ts '
+                    'JOIN Teams t on ts.team_id = t.team_id '
+                    'JOIN Coaches c on t.team_id = c.team_id '
+                    'WHERE coach_id = {};').format(coach_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
     
 @stats.route('/teamStats', methods=['POST'])
 def add_team_stats():
@@ -241,15 +260,13 @@ def add_team_stats():
     
     return 'Success!'
 
-@stats.route('/teamStats', methods=['PUT'])
-def update_player_profile_team():
+@stats.route('/teamStats/<team_id>/<game_id>', methods=['PUT'])
+def update_teamStats(team_id, game_id):
     # collecting data from the request object 
     data = request.json
     current_app.logger.info(data)
 
-    #extracting the variable
-    team_id = data['team_id']
-    game_id = data['game_id']
+    #extracting the variable    
     fouls = data['fouls']
     assists = data['assists']
     points = data['points']
@@ -274,6 +291,25 @@ def update_player_profile_team():
 #######################################################
 
 
+@stats.route('/teamProfile/<coach_id>', methods=['GET'])
+def get_team_profile_coach_id(coach_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT * FROM TeamProfile tp '
+                    'JOIN Teams t ON tp.team_id = t.team_id '
+                    'JOIN Coaches c on t.team_id = c.team_id '
+                    'WHERE coach_id = {};').format(coach_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+    
+
+
 @stats.route('/teamProfile/<team_id>/<sport>', methods=['GET'])
 def get_team_profile(team_id, sport):
     cursor = db.get_db().cursor()
@@ -289,8 +325,8 @@ def get_team_profile(team_id, sport):
     return response
     
 
-@stats.route('/teamProfile/<team_id>/<sport>', methods=['PUT'])
-def update_team_profile(team_id, sport):
+@stats.route('/teamProfile/<team_id>', methods=['PUT'])
+def update_team_profile(team_id):
     # collecting data from the request object 
     data = request.json
     current_app.logger.info(data)
@@ -301,7 +337,8 @@ def update_team_profile(team_id, sport):
     fouls = data['fouls']
 
     # Constructing the query
-    query = 'UPDATE TeamProfile SET points = {}, assists = {}, fouls = {} WHERE team_id = {} AND sport = "{}"'.format(points, assists, fouls, team_id, sport)
+    query = ('UPDATE TeamProfile SET points = {}, assists = {}, fouls = {} ' 
+             'WHERE team_id = {}').format(points, assists, fouls, team_id)
     current_app.logger.info(query)
 
     # executing and committing the update statement 

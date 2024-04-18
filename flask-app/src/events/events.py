@@ -29,13 +29,17 @@ def get_practice_attendance():
 @events.route('/practiceAttendance/<player_id>', methods=['GET'])
 def get_practice_attendance_player(player_id):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM PracticeAttendance '
-                   'WHERE player_id = "{}"'.format(player_id))
+    cursor.execute(('SELECT * FROM PracticeAttendance pa '
+                    'JOIN Practices p ON pa.practice_id = p.practice_id '
+                    'JOIN Players pl ON pa.player_id = pl.player_id '
+                    'WHERE pa.player_id = {}').format(player_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
     for row in data:
-        json_data.append(dict(zip(row_headers, row)))
+        row_dict = dict(zip(row_headers, row))
+        row_dict['time'] = str(row_dict['time'])
+        json_data.append(row_dict)
     response = make_response(jsonify(json_data))
     response.status_code = 200
     response.mimetype = 'application/json'
@@ -88,7 +92,7 @@ def remove_practice_attendance():
     return 'Practice Attendance deleted successfully'
 
 #######################################################
-## PRACTICE ATTENDANCE ROUTES
+## GAME ATTENDANCE ROUTES
 #######################################################
 
 @events.route('/gameAttendance', methods=['GET'])
@@ -265,10 +269,13 @@ def get_practices():
     response.mimetype = 'application/json'
     return response
 
-@events.route('/practices/<practice_id>', methods=['GET'])
-def get_practices_id(practice_id):
+@events.route('/practices/<coach_id>', methods=['GET'])
+def get_practices_coach_id(coach_id):
     cursor = db.get_db().cursor()
-    cursor.execute(f'SELECT * FROM Practices WHERE practice_id = {practice_id}')
+    cursor.execute(('SELECT * FROM Practices p '
+                    'JOIN TeamPractices tp on p.practice_id = tp.practice_id '
+                    'JOIN Coaches c on tp.team_id = c.team_id '
+                    'WHERE coach_id = {};').format(coach_id))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     data = cursor.fetchall()
@@ -311,7 +318,7 @@ def add_practices():
 @events.route('/practices/<practice_id>', methods=['DELETE'])
 def delete_Practices(practice_id):
     # Constructing the query
-    query = f'DELETE FROM Practices WHERE Practices = {practice_id}'
+    query = f'DELETE FROM Practices WHERE practice_id = {practice_id}'
     
     # executing and committing the delete statement 
     cursor = db.get_db().cursor()

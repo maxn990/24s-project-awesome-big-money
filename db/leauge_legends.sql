@@ -171,10 +171,10 @@ CREATE TABLE IF NOT EXISTS GameCoaches
     PRIMARY KEY (coach_id, game_id),
     CONSTRAINT fk_14
         FOREIGN KEY (coach_id) REFERENCES Coaches (coach_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_15
         FOREIGN KEY (game_id) REFERENCES Games (game_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS PlayerStats
@@ -187,10 +187,10 @@ CREATE TABLE IF NOT EXISTS PlayerStats
     PRIMARY KEY (player_id, game_id),
     CONSTRAINT fk_16
         FOREIGN KEY (player_id) REFERENCES Players (player_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_17
         FOREIGN KEY (game_id) REFERENCES Games (game_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS TeamStats
@@ -203,10 +203,10 @@ CREATE TABLE IF NOT EXISTS TeamStats
     PRIMARY KEY (team_id, game_id),
     CONSTRAINT fk_18
         FOREIGN KEY (team_id) REFERENCES Teams (team_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_19
         FOREIGN KEY (game_id) REFERENCES Games (game_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS GameAttendance
@@ -216,10 +216,10 @@ CREATE TABLE IF NOT EXISTS GameAttendance
     PRIMARY KEY (game_id, player_id),
     CONSTRAINT fk_20
         FOREIGN KEY (game_id) REFERENCES Games (game_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_21
         FOREIGN KEY (player_id) REFERENCES Players (player_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS Practices
@@ -240,10 +240,10 @@ CREATE TABLE IF NOT EXISTS PracticeAttendance
     PRIMARY KEY (practice_id, player_id),
     CONSTRAINT fk_22
         FOREIGN KEY (practice_id) REFERENCES Practices (practice_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_23
         FOREIGN KEY (player_id) REFERENCES Players (player_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS TeamGames
@@ -253,10 +253,10 @@ CREATE TABLE IF NOT EXISTS TeamGames
     PRIMARY KEY (team_id, game_id),
     CONSTRAINT fk_24
         FOREIGN KEY (team_id) REFERENCES Teams (team_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_25
         FOREIGN KEY (game_id) REFERENCES Games (game_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 CREATE TABLE IF NOT EXISTS TeamPractices
@@ -266,10 +266,10 @@ CREATE TABLE IF NOT EXISTS TeamPractices
     PRIMARY KEY (practice_id, team_id),
     CONSTRAINT fk_26
         FOREIGN KEY (practice_id) REFERENCES Practices (practice_id)
-            ON UPDATE cascade ON DELETE restrict,
+            ON UPDATE cascade ON DELETE cascade,
     CONSTRAINT fk_27
         FOREIGN KEY (team_id) REFERENCES Teams (team_id)
-            ON UPDATE cascade ON DELETE restrict
+            ON UPDATE cascade ON DELETE cascade
 );
 
 
@@ -4932,5 +4932,3 @@ insert into LeagueFans (league_id, fan_id)
 values (17, 3);
 insert into LeagueFans (league_id, fan_id)
 values (43, 46);
-
-

@@ -160,6 +160,48 @@ def get_playerTeams():
     response.mimetype = 'application/json'
     return response
 
+@organizations.route('/playerTeams/<coach_id>', methods=['GET'])
+def get_playerTeams_id(coach_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(('SELECT pt.player_id AS player_id, '
+                            'pt.team_id AS team_id, '
+                            'p.lastName AS player_lastName, '
+                            'p.firstName AS player_firstName, '
+                            'p.email AS player_email, '
+                            'p.address AS player_address, '
+                            'p.phone AS player_phone, '
+                            't.team_id AS team_id, '
+                            'createdAt, season, teamName, league_id, wins, losses, '
+                            'coach_id, '
+                            'c.firstName AS coach_firstName, '
+                            'c.lastName AS coach_lastName '
+                    'FROM PlayerTeams pt '
+                    'JOIN Players p ON pt.player_id = p.player_id '
+                    'JOIN Teams t ON pt.team_id = t.team_id '
+                    'JOIN Coaches c ON t.team_id = c.team_id '
+                    'WHERE c.coach_id = {};').format(coach_id))
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    data = cursor.fetchall()
+    for row in data:
+        json_data.append(dict(zip(row_headers, row)))
+    response = make_response(jsonify(json_data))
+    response.status_code = 200
+    response.mimetype = 'application/json'
+    return response
+
+@organizations.route('/playerTeams/<player_id>/<team_id>', methods=['DELETE'])
+def delete_playerTeams(player_id, team_id):
+    # Constructing the query
+    query = f'DELETE FROM PlayerTeams WHERE player_id = {player_id} AND team_id = {team_id}'
+    
+    # executing and committing the delete statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'PlayerTeams deleted successfully'
+
 @organizations.route('/teamPractices', methods=['GET'])
 def get_teamPractices():
     cursor = db.get_db().cursor()
