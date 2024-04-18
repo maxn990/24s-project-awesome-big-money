@@ -290,7 +290,7 @@ def get_team_profile(team_id, sport):
     
 
 @stats.route('/teamProfile/<team_id>/<sport>', methods=['PUT'])
-def update_player_profile(team_id, sport):
+def update_team_profile(team_id, sport):
     # collecting data from the request object 
     data = request.json
     current_app.logger.info(data)
@@ -311,69 +311,3 @@ def update_player_profile(team_id, sport):
     
     return 'Success!'
 
-
-
-
-#######################################################
-## TEAM PROFILE ROUTES
-#######################################################
-
-
-@stats.route('/teamProfile/<team_id>/<sport>', methods=['GET'])
-def get_team_profile(team_id, sport):
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM TeamProfile WHERE team_id = {} AND sport = "{}"'.format(team_id, sport))
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    response = make_response(jsonify(json_data))
-    response.status_code = 200
-    response.mimetype = 'application/json'
-    return response
-
-@stats.route('/playerProfile/<team_id>/<sport>', methods=['POST'])
-def add_team_information(team_id, sport):
-    # collecting data from the request object 
-    data = request.json
-    current_app.logger.info(data)
-
-    #extracting the variable
-    teamId = data['team_id']
-    sport = data['sport']
-
-    # Constructing the query
-    query = 'insert into TeamProfile (team_id, sport) values ("'
-    query += str(team_id) + '", "'
-    query += sport + ')'
-    current_app.logger.info(query)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
-    
-    return 'Success!'
-
-@stats.route('/teamProfile/<team_id>/<sport>', methods=['PUT'])
-def update_player_profile(team_id, sport):
-    # collecting data from the request object 
-    data = request.json
-    current_app.logger.info(data)
-
-    #extracting the variable
-    points = data['points']
-    assists = data['assists']
-    fouls = data['fouls']
-
-    # Constructing the query
-    query = 'UPDATE TeamProfile SET points = {}, assists = {}, fouls = {} WHERE team_id = {} AND sport = "{}"'.format(points, assists, fouls, team_id, sport)
-    current_app.logger.info(query)
-
-    # executing and committing the update statement 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
-    
-    return 'Success!'
