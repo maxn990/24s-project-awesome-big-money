@@ -7,8 +7,8 @@ db_password.txt and db_root_password.txt. Execute _docker compose up -d_ to star
 the containers.
 
 # Team Members 
-Vichu Selvaraju
-Chase Houser
-Max Norman
-Aryan Jain
+Vichu Selvaraju,
+Chase Houser,
+Max Norman,
+Aryan Jain,
 Madi Singlak
